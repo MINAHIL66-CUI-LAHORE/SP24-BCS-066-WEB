@@ -1,1 +1,11 @@
-# SP24-BCS-066-WEB
+# Web Technologies – Course Repository
+
+**Student Name:** Minahil Aftab 
+**Roll No:** SP24-BCS-066
+**Course:** Web Technologies  
+**Semester:** 5th  
+**Instructor:** Muhammad Usman Akram
+**University:** COMSATS University Islamabad,LAHORE CAMPUS
+
+## 📌 About This Repository
+This repository contains all academic work for the Web Technologies course, including assignments, labs, and practice tasks. Each assignment is organized in a separate folder for better clarity and evaluation.
