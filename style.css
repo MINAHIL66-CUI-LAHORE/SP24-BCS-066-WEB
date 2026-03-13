@@ -1,0 +1,132 @@
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #0C0C0C;
+  --white: #ffffff;
+  --grey-100: #f5f5f5;
+  --grey-200: #e5e5e5;
+  --grey-500: #767676;
+  --red: #c0392b;
+  --font-condensed: 'Barlow Condensed', sans-serif;
+  --font-body: 'Barlow', sans-serif;
+  --nav-h: 60px;
+  --max-w: 1400px;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--black);
+  background: var(--white);
+}
+
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+/* ===== HEADER ===== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--grey-200);
+}
+
+/* ===== TOP BAR ===== */
+.nav__top {
+  background: var(--black);
+  padding: 6px 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.nav__utility {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.nav__utility li { color: var(--grey-500); font-size: 11px; }
+
+.nav__utility li a {
+  font-size: 11px;
+  color: var(--grey-200);
+  transition: color 0.2s;
+}
+
+.nav__utility li a:hover { color: var(--white); }
+
+/* ===== MAIN NAV ROW ===== */
+.nav__main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: var(--nav-h);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ===== NAV LINKS ===== */
+.nav__links {
+  display: flex;
+  gap: 32px;
+}
+
+.nav__links a {
+  font-family: var(--font-condensed);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--black);
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.nav__links a:hover { border-color: var(--black); }
+
+.nav__sale a { color: var(--red); }
+
+/* ===== ACTION ICONS ===== */
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s;
+  color: var(--black);
+}
+
+.icon-btn:hover { background: var(--grey-100); }
+
+/* ===== CART BADGE ===== */
+.cart-btn { position: relative; }
+
+.cart-count {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: var(--black);
+  color: var(--white);
+  font-size: 9px;
+  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
