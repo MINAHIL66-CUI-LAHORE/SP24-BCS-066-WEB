@@ -27,17 +27,18 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 /* ===== HEADER ===== */
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
-  background: var(--white);
-  border-bottom: 1px solid var(--grey-200);
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: var(--black);
 }
 
 /* ===== TOP BAR ===== */
 .nav__top {
-  background: var(--black);
-  padding: 6px 24px;
+  background: #333333;
+  padding: 6px 40px;
   display: flex;
   justify-content: flex-end;
 }
@@ -63,11 +64,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 24px;
-  height: var(--nav-h);
-  max-width: var(--max-w);
-  margin: 0 auto;
-  width: 100%;
+  padding: 16px 40px;
 }
 
 /* ===== NAV LINKS ===== */
@@ -77,51 +74,52 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .nav__links a {
+  color: var(--white);
   font-family: var(--font-condensed);
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--black);
   padding-bottom: 4px;
   border-bottom: 2px solid transparent;
   transition: border-color 0.2s;
 }
+.nav__links a:hover { border-color: var(--white); }
 
-.nav__links a:hover { border-color: var(--black); }
-
-.nav__sale a { color: var(--red); }
-
+.nav__sale a { color: #e00000; }
+.nav__sale a:hover { border-color: #e00000; }
 /* ===== ACTION ICONS ===== */
 .nav__actions {
   display: flex;
+  gap: 16px;
   align-items: center;
-  gap: 8px;
 }
 
 .icon-btn {
-  width: 40px;
-  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--white);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  padding: 6px;
+  border-radius: 4px;
   transition: background 0.2s;
-  color: var(--black);
+  position: relative;
 }
-
-.icon-btn:hover { background: var(--grey-100); }
+.icon-btn:hover { background: rgba(255,255,255,0.1); }
 
 /* ===== CART BADGE ===== */
 .cart-btn { position: relative; }
 
 .cart-count {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  background: var(--black);
+  top: -2px;
+  right: -2px;
+  background: #e00000;
   color: var(--white);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   width: 16px;
   height: 16px;
