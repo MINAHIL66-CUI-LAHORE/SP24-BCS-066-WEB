@@ -255,3 +255,52 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-size: 22px;
   font-weight: 900;
 }
+/* =============================================
+   CATEGORY STRIP
+   ============================================= */
+.cat-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+}
+
+.cat-strip__item {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+}
+
+.cat-strip__img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--gray-200);
+  transition: transform 0.4s ease;
+}
+
+.cat-strip__item:hover .cat-strip__img {
+  transform: scale(1.06);
+}
+
+.cat-strip__item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);
+}
+
+.cat-strip__item span {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 2;
+  font-family: var(--font-condensed);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
