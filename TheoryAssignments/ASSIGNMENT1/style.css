@@ -776,8 +776,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .perk {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+
+  background:rgba(134, 130, 130, 0.633);
+  border: 3px solid rgba(22, 19, 19, 0.3);
   padding: 28px 24px;
   display: flex;
   flex-direction: column;
@@ -786,7 +787,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .perk:hover {
-  background: rgba(255,255,255,0.09);
+  background: rgba(180, 175, 175, 0.879);
 }
 
 .perk__icon {
@@ -797,10 +798,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .perk span:last-child {
   font-family: var(--font-condensed);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.8);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 /* =============================================
@@ -983,4 +984,232 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.prime-banner {
+  background-color: #1565C0;
+  padding: 48px 20px;
+  text-align: center;
+}
+.prime-banner__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.prime-banner__tagline {
+  color: #fff;
+  font-size: 13px;
+  letter-spacing: 2px;
+  margin: 0;
+}
+.prime-banner__btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 12px 32px;
+  background: #fff;
+  color: #000;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-decoration: none;
+  border: 2px solid #000;
+  transition: background 0.2s, color 0.2s;
+}
+.prime-banner__btn:hover {
+  background: #000;
+  color: #fff;
+}
+.related-resources {
+  background: #fff;
+  padding: 48px 40px;
+}
+.related-resources__title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin: 0 0 24px 0;
+  color: #000;
+}
+.related-resources__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+.resource-card {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+}
+.resource-card__img {
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  background: #eee;
+}
+.resource-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.resource-card:hover .resource-card__img img {
+  transform: scale(1.04);
+}
+.resource-card__body {
+  padding: 14px 0 0;
+}
+.resource-card__body h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: #000;
+}
+.resource-card__body p {
+  font-size: 13px;
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* 1. Hero title slide-in on load */
+.hero__title {
+  animation: slideInLeft 0.8s ease forwards;
+}
+.hero__subtitle {
+  animation: slideInLeft 0.8s ease 0.2s both;
+}
+.hero__cta {
+  animation: slideInLeft 0.8s ease 0.4s both;
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  width: 0; height: 0;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+}
+.btn:active::after {
+  width: 300px; height: 300px;
+  opacity: 1;
+}
+
+
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+
+.nav__links a {
+  position: relative;
+}
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 0; height: 2px;
+  background: #000;
+  transition: width 0.3s ease;
+}
+.nav__links a:hover::after {
+  width: 100%;
+}
+
+
+.resource-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.resource-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.1);
+}
+
+
+.swatch {
+  transition: transform 0.2s ease;
+}
+.swatch:hover {
+  transform: scale(1.4);
+}
+
+
+.cart-btn:hover svg {
+  animation: shake 0.4s ease;
+}
+@keyframes shake {
+  0%,100% { transform: rotate(0); }
+  25%      { transform: rotate(-10deg); }
+  75%      { transform: rotate(10deg); }
+}
+
+.nav__logo img:hover {
+  animation: pulse 0.5s ease;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+
+
+.hero {
+  background-image: url(Assets/running.jpg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+
+.members {
+  background-image: url(Assets/global_adiclub_refresh_membership_2025_evergreen_1_adiclub_banner_split_4_d_c23eaf0cff.jpg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+
+.split-promo__panel--dark {
+  background-image: url(Assets/global_superstar_originals_ss26_launch_plp_dual_gender_banner_statement_1_d_6c442cf90c.jpg);
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+.split-promo__panel--dark {
+  background-image: url(Assets/global_superstar_originals_ss26_launch_plp_dual_gender_banner_statement_1_d_6c442cf90c.jpg);
+  background-size: 200%;        
+  background-repeat: no-repeat;
+  background-position: 0% center;
+  animation: horizontalPan 20s linear infinite alternate;
+}
+
+@keyframes horizontalPan {
+  from { background-position: 0% center; }
+  to   { background-position: 100% center; }
+}
+.circle-img img {
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+}
+
+.circle-img img:active {
+  transform: translateX(120px) translateY(-30px) rotate(25deg) scale(0.9);
 }
