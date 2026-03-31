@@ -12,6 +12,7 @@ This repository contains all academic work for the Web Technologies course, incl
 
 Theory Assignment I Link:
 https://minahil66-cui-lahore.github.io/SP24-BCS-066-WEB/TheoryAssignments/ASSIGNMENT1/index.html
+
 Theory Assignment II Link:
 https://minahil66-cui-lahore.github.io/SP24-BCS-066-WEB/TheoryAssignments/ASSIGNMENT2/index.html
 
