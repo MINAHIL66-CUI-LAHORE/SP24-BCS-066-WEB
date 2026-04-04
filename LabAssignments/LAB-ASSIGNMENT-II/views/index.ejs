@@ -1,0 +1,147 @@
+<%- include('partials/header') %>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero__bg">
+      <video autoplay muted loop playsinline>
+        <source src="/Assets/Handball_Spezial_Shoes_Blue_BD7633_video.webm" type="video/webm">
+      </video>
+    </div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">New Collection 2025</p>
+      <h1 class="hero__title">IMPOSSIBLE<br><span>IS NOTHING</span></h1>
+      <p class="hero__subtitle">Ultraboost 25 — Engineered for your fastest.</p>
+      <div class="hero__cta">
+        <a href="/products" class="btn btn--white">Shop Now</a>
+        <a href="#"         class="btn btn--outline">Explore</a>
+      </div>
+    </div>
+    <div class="hero__badge">
+      <span>NEW</span>
+      <span>SS25</span>
+    </div>
+  </section>
+
+  <!-- ===== CATEGORY STRIP ===== -->
+  <section class="cat-strip">
+    <% categories.forEach(function(cat) { %>
+      <a href="#" class="cat-strip__item">
+        <div class="cat-strip__img" style="background-image:url(/<%= cat.image %>)"></div>
+        <span><%= cat.label %></span>
+      </a>
+    <% }) %>
+  </section>
+
+  <!-- ===== FEATURE BANNER ===== -->
+  <section class="feature-banner">
+    <div class="feature-banner__left">
+      <p class="label">Editor's Pick</p>
+      <h2>NMD_R1<br>Primeknit</h2>
+      <p>Street-ready comfort meets iconic style. The NMD is back — bolder than ever.</p>
+      <a href="#" class="btn btn--black">Shop NMD</a>
+    </div>
+    <div class="feature-banner__right">
+      <div class="feature-banner__img">
+        <video autoplay muted loop playsinline>
+          <source src="/Assets/Recording 2026-03-13 114940.mp4" type="video/mp4">
+        </video>
+        <div class="feature-banner__tag">PKG</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PRODUCTS GRID ===== -->
+  <section class="products">
+    <div class="products__header">
+      <h2>Best Sellers</h2>
+      <a href="/products" class="see-all">
+        See All
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="products__grid">
+      <% products.forEach(function(p) { %>
+        <%- include('partials/product-card', { product: p }) %>
+      <% }) %>
+    </div>
+  </section>
+
+  <!-- ===== SPLIT PROMO ===== -->
+  <section class="split-promo">
+    <div class="split-promo__panel split-promo__panel--dark">
+      <div class="circle-img">
+        <img src="/Assets/originals.jpg" alt="Originals Collection">
+      </div>
+      <p class="label">Limited Edition</p>
+      <h2>Originals<br>Collection</h2>
+      <p>Retro styles reimagined for a new generation.</p>
+      <a href="#" class="btn btn--white">Shop Originals</a>
+    </div>
+    <div class="split-promo__panel split-promo__panel--light">
+      <div class="circle-img">
+        <img src="/Assets/training.jpg" alt="Sport Training">
+      </div>
+      <p class="label">Performance</p>
+      <h2>Train<br>Harder</h2>
+      <p>Gear built for athletes who never settle for less.</p>
+      <a href="#" class="btn btn--black">Shop Sport</a>
+    </div>
+  </section>
+
+  <!-- ===== MEMBERS BANNER ===== -->
+  <section class="members">
+    <div class="members__content">
+      <p class="label">adiClub</p>
+      <h2>Become a Member</h2>
+      <p>Join for free. Get exclusive access to new drops, member-only discounts, and early access to collaborations.</p>
+      <div class="members__cta">
+        <a href="#" class="btn btn--white">Join Free</a>
+        <a href="#" class="btn btn--outline-white">Learn More</a>
+      </div>
+    </div>
+    <div class="members__perks">
+      <div class="perk"><span class="perk__icon">★</span><span>Earn Points</span></div>
+      <div class="perk"><span class="perk__icon">⚡</span><span>Early Access</span></div>
+      <div class="perk"><span class="perk__icon">%</span><span>Member Deals</span></div>
+      <div class="perk"><span class="perk__icon">↩</span><span>Free Returns</span></div>
+    </div>
+  </section>
+
+  <!-- ===== AMAZON PRIME + RELATED RESOURCES ===== -->
+  <section class="prime-resources">
+    <div class="prime-banner">
+      <div class="prime-banner__inner">
+        <div class="prime-banner__logo">
+          <svg viewBox="0 0 120 45" xmlns="http://www.w3.org/2000/svg" width="140">
+            <text x="10" y="34" font-family="Amazon Ember, Arial, sans-serif" font-size="36" font-weight="700" fill="white">prime</text>
+            <path d="M10 40 Q65 55 110 40" stroke="#FF9900" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <polygon points="107,36 113,41 107,44" fill="#FF9900"/>
+          </svg>
+        </div>
+        <p class="prime-banner__tagline">FAST, FREE DELIVERY</p>
+        <a href="#" class="prime-banner__btn">SHOP NOW &nbsp;&#x2192;</a>
+      </div>
+    </div>
+
+    <div class="related-resources">
+      <h3 class="related-resources__title">RELATED RESOURCES</h3>
+      <div class="related-resources__grid">
+        <% resources.forEach(function(r) { %>
+          <a href="#" class="resource-card">
+            <div class="resource-card__img">
+              <img src="/<%= r.image %>" alt="<%= r.title %>"/>
+            </div>
+            <div class="resource-card__body">
+              <h4><%= r.title %></h4>
+              <p><%= r.desc %></p>
+            </div>
+          </a>
+        <% }) %>
+      </div>
+    </div>
+  </section>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+
+<section class="products" style="padding-top: 120px;">
+  <div class="products__header">
+    <h2>All Products</h2>
+    <a href="/" class="see-all">← Back to Home</a>
+  </div>
+  <div class="products__grid">
+    <% products.forEach(function(p) { %>
+      <%- include('partials/product-card', { product: p }) %>
+    <% }) %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
