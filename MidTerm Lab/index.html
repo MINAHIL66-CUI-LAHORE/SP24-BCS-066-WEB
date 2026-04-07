@@ -6,6 +6,8 @@
   <title>Adidas – Impossible Is Nothing</title>
   <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
@@ -48,7 +50,6 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>
             <span class="cart-count">3</span>
           </button>
-          <!-- HAMBURGER — sits with icons on the right, visible only on mobile -->
           <button class="nav__hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
             <span></span>
             <span></span>
@@ -123,7 +124,7 @@
     </div>
   </section>
 
-  <!-- ===== PRODUCTS GRID ===== -->
+  <!-- ===== ORIGINAL PRODUCTS GRID ===== -->
   <section class="products">
     <div class="products__header">
       <h2>Best Sellers</h2>
@@ -217,6 +218,79 @@
 
     </div>
   </section>
+
+  <!-- =============================================
+       FEATURED DEALS — AJAX-POWERED SECTION
+       ============================================= -->
+  <section class="products featured-deals" id="featuredDeals">
+    <div class="products__header">
+      <h2>Featured Deals</h2>
+      <a href="#" class="see-all">See All <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+
+    <!-- Loading skeleton shown while AJAX fetches data -->
+    <div class="products__grid" id="featuredDealsGrid">
+      <div class="product-card skeleton-card">
+        <div class="skeleton skeleton--img"></div>
+        <div class="product-card__info">
+          <div class="skeleton skeleton--line skeleton--short"></div>
+          <div class="skeleton skeleton--line"></div>
+          <div class="skeleton skeleton--line skeleton--medium"></div>
+        </div>
+      </div>
+      <div class="product-card skeleton-card">
+        <div class="skeleton skeleton--img"></div>
+        <div class="product-card__info">
+          <div class="skeleton skeleton--line skeleton--short"></div>
+          <div class="skeleton skeleton--line"></div>
+          <div class="skeleton skeleton--line skeleton--medium"></div>
+        </div>
+      </div>
+      <div class="product-card skeleton-card">
+        <div class="skeleton skeleton--img"></div>
+        <div class="product-card__info">
+          <div class="skeleton skeleton--line skeleton--short"></div>
+          <div class="skeleton skeleton--line"></div>
+          <div class="skeleton skeleton--line skeleton--medium"></div>
+        </div>
+      </div>
+      <div class="product-card skeleton-card">
+        <div class="skeleton skeleton--img"></div>
+        <div class="product-card__info">
+          <div class="skeleton skeleton--line skeleton--short"></div>
+          <div class="skeleton skeleton--line"></div>
+          <div class="skeleton skeleton--line skeleton--medium"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error state (hidden by default) -->
+    <div class="deals-error" id="dealsError" style="display:none;">
+      <p>⚠ Could not load featured deals. <button id="retryBtn" class="btn btn--black">Retry</button></p>
+    </div>
+  </section>
+
+  <!-- =============================================
+       QUICK VIEW MODAL
+       ============================================= -->
+  <div class="modal-overlay" id="quickViewOverlay" role="dialog" aria-modal="true" aria-label="Quick View" style="display:none;">
+    <div class="modal">
+      <button class="modal__close" id="modalClose" aria-label="Close modal">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="modal__body">
+        <div class="modal__img-wrap" id="modalImg"></div>
+        <div class="modal__info">
+          <p class="modal__category" id="modalCategory"></p>
+          <h2 class="modal__title" id="modalTitle"></h2>
+          <div class="modal__rating" id="modalRating"></div>
+          <div class="modal__price" id="modalPrice"></div>
+          <p class="modal__desc" id="modalDesc"></p>
+          <button class="btn btn--black btn--full modal__cta">Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== SPLIT PROMO ===== -->
   <section class="split-promo">
@@ -426,33 +500,175 @@
     </div>
   </footer>
 
-  <!-- ===== JAVASCRIPT — Hamburger Toggle ===== -->
+  <!-- ===== JAVASCRIPT ===== -->
   <script>
+    /* ── Hamburger Toggle ── */
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const navLinks     = document.getElementById('navLinks');
 
-    // Toggle menu open/close
     hamburgerBtn.addEventListener('click', function () {
       const isOpen = navLinks.classList.toggle('nav__links--open');
       hamburgerBtn.classList.toggle('nav__hamburger--open', isOpen);
       hamburgerBtn.setAttribute('aria-expanded', isOpen);
     });
 
-    // Close menu when a nav link is clicked (bonus requirement)
     function closeMenu() {
       navLinks.classList.remove('nav__links--open');
       hamburgerBtn.classList.remove('nav__hamburger--open');
       hamburgerBtn.setAttribute('aria-expanded', 'false');
     }
 
-    // Close menu when clicking outside the nav
     document.addEventListener('click', function (e) {
       if (!hamburgerBtn.contains(e.target) && !navLinks.contains(e.target)) {
         closeMenu();
       }
     });
+
+    /* ── Helper: render star rating ── */
+    function renderStars(rate, count) {
+      const full  = Math.round(rate);
+      const stars = '★'.repeat(full) + '☆'.repeat(5 - full);
+      return `<span class="modal__stars">${stars}</span>
+              <span class="modal__rating-num">${rate} / 5 &nbsp;(${count} reviews)</span>`;
+    }
+
+    /* ── Helper: build a single product card ── */
+    function buildCard(product) {
+      // Truncate title for card display
+      const shortTitle = product.title.length > 30
+        ? product.title.substring(0, 30) + '…'
+        : product.title;
+
+      const formattedPrice = '$' + parseFloat(product.price).toFixed(2);
+      const originalPrice  = '$' + (parseFloat(product.price) * 1.3).toFixed(2);
+      const rateStars      = '★'.repeat(Math.round(product.rating.rate)) + '☆'.repeat(5 - Math.round(product.rating.rate));
+
+      // Encode description safely for data attribute
+      const safeDesc  = encodeURIComponent(product.description);
+      const safeTitle = encodeURIComponent(product.title);
+      const safeCat   = encodeURIComponent(product.category);
+
+      return `
+        <div class="product-card" data-id="${product.id}">
+          <div class="product-card__badge">-30%</div>
+          <div class="product-card__img-wrap">
+            <img src="${product.image}" alt="${shortTitle}" loading="lazy" />
+            <button class="product-card__wish" aria-label="Add to wishlist">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+              </svg>
+            </button>
+          </div>
+          <div class="product-card__info">
+            <p class="product-card__label">${product.category}</p>
+            <h3>${shortTitle}</h3>
+            <div class="product-card__stars">${rateStars}</div>
+            <div class="product-card__price">
+              <span class="price--sale">${formattedPrice}</span>
+              <span class="price--orig">${originalPrice}</span>
+            </div>
+            <div class="product-card__actions">
+              <button class="btn btn--black btn--full">Add to Cart</button>
+              <button class="btn btn--outline-dark quick-view-btn"
+                data-title="${safeTitle}"
+                data-category="${safeCat}"
+                data-price="${formattedPrice}"
+                data-orig="${originalPrice}"
+                data-desc="${safeDesc}"
+                data-img="${product.image}"
+                data-rate="${product.rating.rate}"
+                data-count="${product.rating.count}">
+                Quick View
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    /* ── AJAX: Fetch Featured Deals ── */
+    function loadFeaturedDeals() {
+      $('#dealsError').hide();
+
+      $.ajax({
+        url: 'https://fakestoreapi.com/products?limit=4',
+        method: 'GET',
+        dataType: 'json',
+        timeout: 10000,
+        success: function (products) {
+          const $grid = $('#featuredDealsGrid');
+          $grid.empty(); // Clear skeletons / previous content
+
+          if (!products || products.length === 0) {
+            $grid.html('<p style="padding:24px;color:var(--grey-500);">No products found.</p>');
+            return;
+          }
+
+          $.each(products, function (i, product) {
+            const $card = $(buildCard(product));
+            $card.css('opacity', 0).css('transform', 'translateY(20px)');
+            $grid.append($card);
+            // Staggered fade-in animation
+            setTimeout(function () {
+              $card.css({
+                transition: 'opacity 0.4s ease, transform 0.4s ease',
+                opacity: 1,
+                transform: 'translateY(0)'
+              });
+            }, i * 100);
+          });
+        },
+        error: function (xhr, status, error) {
+          $('#featuredDealsGrid').empty();
+          $('#dealsError').fadeIn();
+          console.error('AJAX error:', status, error);
+        }
+      });
+    }
+
+    // Initial load
+    loadFeaturedDeals();
+
+    // Retry button
+    $('#retryBtn').on('click', function () {
+      loadFeaturedDeals();
+    });
+
+    /* ── Quick View Modal ── */
+    // Open modal via event delegation (handles dynamically injected cards)
+    $(document).on('click', '.quick-view-btn', function () {
+      const $btn = $(this);
+
+      $('#modalTitle').text(decodeURIComponent($btn.data('title')));
+      $('#modalCategory').text(decodeURIComponent($btn.data('category')));
+      $('#modalPrice').html(
+        `<span class="price--sale">${$btn.data('price')}</span>
+         <span class="price--orig">${$btn.data('orig')}</span>`
+      );
+      $('#modalDesc').text(decodeURIComponent($btn.data('desc')));
+      $('#modalImg').html(`<img src="${$btn.data('img')}" alt="${decodeURIComponent($btn.data('title'))}" />`);
+      $('#modalRating').html(renderStars(parseFloat($btn.data('rate')), parseInt($btn.data('count'))));
+
+      $('#quickViewOverlay').fadeIn(200);
+      $('body').addClass('modal-open');
+    });
+
+    // Close modal
+    function closeModal() {
+      $('#quickViewOverlay').fadeOut(200);
+      $('body').removeClass('modal-open');
+    }
+
+    $('#modalClose').on('click', closeModal);
+
+    $('#quickViewOverlay').on('click', function (e) {
+      if ($(e.target).is('#quickViewOverlay')) closeModal();
+    });
+
+    $(document).on('keydown', function (e) {
+      if (e.key === 'Escape') closeModal();
+    });
   </script>
 
 </body>
-<!--THEORY ASSIGNMENT II-->
+<!--THEORY ASSIGNMENT II — MIDTERM SP26-->
 </html>
