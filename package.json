@@ -1,0 +1,25 @@
+{
+  "name": "sp24-bcs-066-web",
+  "version": "1.0.0",
+  "description": "**Student Name:** Minahil Aftab \r **Roll No:** SP24-BCS-066\r **Course:** Web Technologies  \r **Semester:** 5th  \r **Instructor:** Muhammad Usman Akram\r **University:** COMSATS University Islamabad,LAHORE CAMPUS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MINAHIL66-CUI-LAHORE/SP24-BCS-066-WEB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MINAHIL66-CUI-LAHORE/SP24-BCS-066-WEB/issues"
+  },
+  "homepage": "https://github.com/MINAHIL66-CUI-LAHORE/SP24-BCS-066-WEB#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.5.0"
+  }
+}
