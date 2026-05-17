@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/catalog.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #f8f7f4;
+      --red: #e5001a;
+      --muted: #8a8a8a;
+      --border: rgba(0,0,0,0.12);
+      --input-bg: rgba(0,0,0,0.03);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow: hidden;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .left {
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+    }
+
+    .left-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.68;
+      animation: drift 18s ease-in-out infinite alternate;
+      transform-origin: 40% 50%;
+    }
+
+    @keyframes drift {
+      0%   { transform: scale(1.08) translate(0, 0); }
+      50%  { transform: scale(1.14) translate(2%, -1.5%); }
+      100% { transform: scale(1.10) translate(-1.5%, 2%); }
+    }
+
+    .left-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.1) 65%, transparent 100%);
+    }
+
+    .left-vert {
+      position: absolute;
+      left: 28px; top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      transform-origin: center center;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      white-space: nowrap;
+    }
+
+    .left-logo {
+      position: absolute;
+      top: 40px; left: 52px;
+    }
+
+    .left-content {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 52px 52px 52px 68px;
+    }
+
+    .left-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+
+    .left-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(64px, 7vw, 88px);
+      line-height: 0.95;
+      color: #fff;
+      letter-spacing: 1px;
+      margin-bottom: 28px;
+    }
+
+    .left-headline em { font-style: normal; color: var(--red); }
+
+    .left-sub {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 300;
+      max-width: 320px;
+      line-height: 1.7;
+      border-left: 2px solid var(--red);
+      padding-left: 14px;
+    }
+
+    .left-steps {
+      position: absolute;
+      right: 36px; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column;
+      gap: 10px;
+    }
+
+    .step-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+    }
+    .step-dot.active {
+      background: #fff;
+      height: 18px;
+      border-radius: 3px;
+    }
+
+    .right {
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 56px 60px;
+      position: relative;
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+    }
+
+    .right-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--black);
+    }
+    .right-top::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 0;
+      width: 80px; height: 4px;
+      background: var(--red);
+    }
+
+    .right-header { margin-bottom: 20px; margin-top: 32px; }
+
+    .right-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      line-height: 1;
+      letter-spacing: 1px;
+      color: var(--black);
+    }
+
+    .alert {
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.02em;
+    }
+    .alert-error  { background: #fff0f2; color: var(--red); border-left: 3px solid var(--red); }
+    .alert-success{ background: #f0fff4; color: #00803a;    border-left: 3px solid #00803a; }
+
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 20px;
+    }
+
+    .field { margin-bottom: 14px; }
+    .field.full { grid-column: 1 / -1; }
+
+    .field-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .field-label .req { color: var(--red); font-size: 14px; line-height: 1; }
+    .field-label .hint { font-size: 9px; letter-spacing: 0.05em; color: rgba(0,0,0,0.3); text-transform: none; }
+
+    .field-input {
+      width: 100%;
+      padding: 13px 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-bottom: 2px solid var(--black);
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--black);
+      outline: none;
+      border-radius: 0;
+      appearance: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .field-input::placeholder { color: rgba(0,0,0,0.22); }
+    .field-input:focus { background: #fff; border-bottom-color: var(--red); }
+
+    .strength-bar { margin-top: 6px; height: 2px; background: var(--border); overflow: hidden; }
+    .strength-fill { height: 100%; width: 0%; background: var(--red); transition: width 0.3s, background 0.3s; }
+
+    .pw-rules { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 8px; }
+    .pw-rules span { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.05em; color: #aaa; transition: color 0.2s; }
+    .pw-rules span.pass { color: #16a34a; }
+
+    .form-actions { margin-top: 20px; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 15px 24px;
+      background: var(--black);
+      color: #fff;
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0;
+      transition: background 0.2s;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--red);
+      transition: width 0.3s ease;
+    }
+    .btn-submit:hover { background: #1a1a1a; }
+    .btn-submit:hover::before { width: 8px; }
+    .btn-submit:active { transform: scale(0.99); }
+
+    .form-footer {
+      margin-top: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-footer-link {
+      font-size: 12px; color: var(--muted);
+      text-decoration: none;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .form-footer-link:hover { color: var(--red); }
+
+    .signin-link { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--muted); letter-spacing: 0.05em; }
+    .signin-link a {
+      color: var(--black); font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 1px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .signin-link a:hover { color: var(--red); border-color: var(--red); }
+
+    @media (max-width: 840px) {
+      .shell { grid-template-columns: 1fr; overflow-y: auto; }
+      .left { display: none; }
+      .right { padding: 72px 28px 90px; min-height: 100vh; overflow-y: visible; }
+      .fields-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="shell">
+
+  <div class="left">
+    <img src="/Assets/login2.jpg" alt="Adidas sneakers" class="left-img" />
+    <div class="left-overlay"></div>
+    <div class="left-vert">Performance · Culture · Community</div>
+    <div class="left-logo">
+      <img src="/Assets/logo.jpg" alt="Adidas" style="width:48px; filter: brightness(0) invert(1);" />
+    </div>
+    <div class="left-content">
+      <div class="left-eyebrow">New Member</div>
+      <h1 class="left-headline">Join<br>The <em>Few</em><br>Who Run.</h1>
+      <p class="left-sub">Early access. Exclusive drops. A community built around the pursuit of better.</p>
+    </div>
+    <div class="left-steps">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="right-top"></div>
+
+    <div class="right-header">
+      <h2 class="right-title">Create Account</h2>
+    </div>
+
+    <% if (locals.error && error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+    <% if (locals.success && success) { %>
+      <div class="alert alert-success">
+        <%= success %>
+        &nbsp;— <a href="/auth/login" style="color:#00803a; font-weight:700; text-decoration:underline;">Sign In →</a>
+      </div>
+    <% } %>
+
+    <form action="/auth/register" method="POST">
+      <div class="fields-grid">
+
+        <div class="field full">
+          <div class="field-label">Full Name <span class="req">*</span></div>
+          <input type="text" id="name" name="name" class="field-input"
+            placeholder="Your Name" required autofocus value="<%= formName %>" />
+        </div>
+
+        <div class="field full">
+          <div class="field-label">Email Address <span class="req">*</span></div>
+          <input type="email" id="email" name="email" class="field-input"
+            placeholder="you@example.com" required value="<%= formEmail %>" />
+        </div>
+
+        <div class="field">
+          <div class="field-label">
+            Password <span class="req">*</span>
+            <span class="hint">min 8 chars</span>
+          </div>
+          <input type="password" id="password" name="password" class="field-input"
+            placeholder="••••••••" minlength="8" required
+            oninput="updateStrength(this.value)" />
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+          <div class="pw-rules">
+            <span id="r-len">✗ 8+ characters</span>
+            <span id="r-upper">✗ Uppercase</span>
+            <span id="r-lower">✗ Lowercase</span>
+            <span id="r-num">✗ Number</span>
+            <span id="r-special">✗ Special (@$!%*?&)</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label">Confirm Password <span class="req">*</span></div>
+          <input type="password" id="confirmPassword" name="confirmPassword"
+            class="field-input" placeholder="••••••••" required />
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-submit">Create Account →</button>
+      </div>
+    </form>
+
+    <div class="form-footer">
+      <a href="/" class="form-footer-link">← Back to store</a>
+      <div class="signin-link">Have an account? <a href="/auth/login">Sign In</a></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function updateStrength(val) {
+    const fill = document.getElementById("strength-fill");
+    const rules = {
+      len:     val.length >= 8,
+      upper:   /[A-Z]/.test(val),
+      lower:   /[a-z]/.test(val),
+      num:     /\d/.test(val),
+      special: /[@$!%*?&]/.test(val),
+    };
+    const labels = {
+      len:     ['r-len',     '✓ 8+ characters',    '✗ 8+ characters'],
+      upper:   ['r-upper',   '✓ Uppercase',         '✗ Uppercase'],
+      lower:   ['r-lower',   '✓ Lowercase',         '✗ Lowercase'],
+      num:     ['r-num',     '✓ Number',            '✗ Number'],
+      special: ['r-special', '✓ Special (@$!%*?&)', '✗ Special (@$!%*?&)'],
+    };
+    let score = 0;
+    for (const [key, passed] of Object.entries(rules)) {
+      const [id, yes, no] = labels[key];
+      const el = document.getElementById(id);
+      el.textContent = passed ? yes : no;
+      el.classList.toggle('pass', passed);
+      if (passed) score++;
+    }
+    const levels = [
+      { pct: 0,   color: "#e5001a" },
+      { pct: 20,  color: "#e5001a" },
+      { pct: 40,  color: "#f59e0b" },
+      { pct: 60,  color: "#f59e0b" },
+      { pct: 80,  color: "#16a34a" },
+      { pct: 100, color: "#16a34a" },
+    ];
+    fill.style.width      = levels[score].pct + "%";
+    fill.style.background = levels[score].color;
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,63 @@
+<% if (product.feature) { %>
+  <!-- ── FEATURED video overlay card ── -->
+  <div class="product-card product-card--feature">
+    <div class="product-card__img-wrap">
+      <video autoplay muted loop playsinline>
+        <source src="/<%= product.video %>" type="video/webm">
+      </video>
+      <button class="product-card__wish" aria-label="Add to wishlist">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+      </button>
+      <div class="product-card__overlay">
+        <p class="label"><%= product.label %></p>
+        <h3><%= product.name %></h3>
+        <a href="/products/<%= product.id %>" class="btn btn--white">Shop Now</a>
+      </div>
+    </div>
+  </div>
+
+<% } else { %>
+  <!-- ── STANDARD product card ── -->
+  <div class="product-card">
+
+    <% if (product.badge) { %>
+      <div class="product-card__badge <%= product.badgeClass || '' %>"><%= product.badge %></div>
+    <% } %>
+
+    <div class="product-card__img-wrap">
+      <img src="/<%= product.image %>" alt="<%= product.alt %>" onerror="this.src='/Assets/placeholder.jpg'"/>
+      <button class="product-card__wish" aria-label="Add to wishlist">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="product-card__info">
+      <p class="product-card__label"><%= product.label %></p>
+      <h3><%= product.name %></h3>
+
+      <% if (product.colors && product.colors.length) { %>
+        <div class="product-card__colors">
+          <% product.colors.forEach(function(c) { %>
+            <span class="swatch" style="background:<%= c %>;" title="<%= c %>"></span>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <div class="product-card__price">
+        <% if (product.salePrice) { %>
+          <span class="price--sale"><%= product.salePrice %></span>
+          <span class="price--orig"><%= product.origPrice %></span>
+        <% } else { %>
+          <span class="price--current"><%= product.price %></span>
+        <% } %>
+      </div>
+
+      <a href="/products/<%= product.id %>" class="btn btn--black btn--full">View Product</a>
+    </div>
+
+  </div>
+<% } %>

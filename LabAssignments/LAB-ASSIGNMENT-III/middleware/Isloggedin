@@ -1,0 +1,7 @@
+// Prevents unauthenticated users from accessing protected routes
+module.exports = function isLoggedIn(req, res, next) {
+  if (req.session && req.session.userId) {
+    return next();
+  }
+  res.redirect('/auth/login?error=You+must+be+logged+in+to+access+that+page.');
+};
