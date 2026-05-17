@@ -138,6 +138,6 @@ app.use((req, res) => {
 
 // ── Start server ──────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
-  console.log(`✅  Adidas app running at http://localhost:${PORT}`);
+  console.log(`  Adidas app running at http://localhost:${PORT}`);
   console.log(`    Admin panel at      http://localhost:${PORT}/admin`);
 });

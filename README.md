@@ -7,7 +7,7 @@
 **Instructor:** Muhammad Usman Akram
 **University:** COMSATS University Islamabad,LAHORE CAMPUS
 
-## 📌 About This Repository
+##  About This Repository
 This repository contains all academic work for the Web Technologies course, including assignments, labs, and practice tasks. Each assignment is organized in a separate folder for better clarity and evaluation.
 
 Theory Assignment I Link:
