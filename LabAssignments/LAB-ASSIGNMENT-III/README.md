@@ -56,7 +56,6 @@ npm run dev
 | `http://localhost:3000/auth/register` | User registration page |
 | `http://localhost:3000/admin` | Admin panel (admin only) |
 | `http://localhost:3000/admin/login` | Admin login page |
-| `http://localhost:3000/checkout` | Checkout (logged-in users only) |
 | `http://localhost:3000/access-denied` | Access denied page (403) |
 
 ---
