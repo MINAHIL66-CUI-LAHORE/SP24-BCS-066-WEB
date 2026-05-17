@@ -1,3 +1,4 @@
+//-LAB-III
 const express      = require('express');
 const path         = require('path');
 const mongoose     = require('mongoose');
@@ -139,5 +140,5 @@ app.use((req, res) => {
 // ── Start server ──────────────────────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`  Adidas app running at http://localhost:${PORT}`);
-  console.log(`    Admin panel at      http://localhost:${PORT}/admin`);
+  console.log(`  Admin panel at      http://localhost:${PORT}/admin`);
 });
