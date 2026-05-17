@@ -6,7 +6,7 @@
 
 ## Overview
 
-This assignment extends the Adidas e-commerce application (Assignment 2) by implementing a robust **authentication system** with role-based access control. It allows users to register, log in securely, and distinguishes between a standard **Customer** and an **Admin**.
+This assignment extends the Adidas e-commerce application  by implementing a robust **authentication system** with role-based access control. It allows users to register, log in securely, and distinguishes between a standard **Customer** and an **Admin**.
 
 ---
 
