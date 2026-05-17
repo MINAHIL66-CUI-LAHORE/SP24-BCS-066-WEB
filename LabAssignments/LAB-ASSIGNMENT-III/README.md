@@ -1,14 +1,11 @@
-Here is your Assignment 3 README formatted cleanly for GitHub, fixing the broken code block and rendering the server routes into a properly structured Markdown table.
+# Lab-Assignment 3 – User Authentication & Role-Based Access Control
 
----
-
-```markdown
-# Assignment 3 – User Authentication & Role-Based Access Control
 ### SP24-BCS-066 | Web Technologies
 
 ---
 
 ## Overview
+
 This assignment extends the Adidas e-commerce application (Assignment 2) by implementing a robust **authentication system** with role-based access control. It allows users to register, log in securely, and distinguishes between a standard **Customer** and an **Admin**.
 
 ---
@@ -16,6 +13,7 @@ This assignment extends the Adidas e-commerce application (Assignment 2) by impl
 ## How to Run
 
 ### 1. Install dependencies
+
 ```bash
 npm install
 
@@ -119,7 +117,3 @@ npm run dev
 | **`express-session`** | `^1.17.3` | Session management |
 | **`connect-mongo`** | `^5.1.0` | MongoDB session store |
 | **`connect-flash`** | `^0.1.1` | Flash messages |
-
-```
-
-```
