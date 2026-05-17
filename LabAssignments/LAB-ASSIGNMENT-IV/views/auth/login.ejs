@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/catalog.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: 'Barlow', sans-serif;
+      background: #f5f5f5;
+      overflow: hidden;
+    }
+
+    .login-shell {
+      display: flex;
+      align-items: stretch;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Left: moving image panel ── */
+    .login-bg {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: none;
+    }
+    @media (min-width: 768px) { .login-bg { display: block; } }
+
+    .login-bg-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      animation: kenBurns 14s ease-in-out infinite alternate;
+      transform-origin: center center;
+    }
+
+    @keyframes kenBurns {
+      0%   { transform: scale(1)    translate(0,    0);   }
+      33%  { transform: scale(1.08) translate(-2%, -1%);  }
+      66%  { transform: scale(1.05) translate(2%,  1.5%); }
+      100% { transform: scale(1.1)  translate(-1%, 2%);   }
+    }
+
+    .login-bg-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,.6) 0%, rgba(0,0,0,.2) 100%);
+    }
+
+    .login-bg-brand { position: absolute; bottom: 48px; left: 48px; color: #fff; }
+    .login-bg-brand-logo { width: 52px; margin-bottom: 14px; filter: brightness(0) invert(1); }
+    .login-bg-tagline {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 46px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 2px; line-height: 1.1;
+    }
+
+    /* ── Right: form panel ── */
+    .login-panel {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 56px 48px;
+      overflow-y: auto;
+    }
+
+    .login-panel-logo { width: 44px; margin-bottom: 28px; }
+
+    .login-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 30px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;
+    }
+    .login-subtitle { font-size: 14px; color: #767677; margin-bottom: 32px; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block; font-size: 13px;
+      font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 8px; color: #1c1c1c;
+    }
+    .form-input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid #e0e0e0;
+      font-size: 15px; font-family: 'Barlow', sans-serif;
+      outline: none; transition: border-color 0.2s;
+      background: #fafafa;
+    }
+    .form-input:focus { border-color: #000; background: #fff; }
+
+    .login-divider { height: 1px; background: #e0e0e0; margin: 24px 0; }
+
+    .btn-block {
+      width: 100%; padding: 14px;
+      background: #000; color: #fff;
+      border: none; font-size: 14px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      transition: background 0.2s;
+    }
+    .btn-block:hover { background: #222; }
+
+    .login-back {
+      margin-top: 24px; font-size: 13px;
+      color: #767677; text-align: center;
+    }
+    .login-back a {
+      color: #000; font-weight: 700;
+      border-bottom: 1px solid #000;
+      text-decoration: none;
+    }
+    .login-back a:hover { color: #e00; border-color: #e00; }
+
+    .alert {
+      padding: 12px 14px; margin-bottom: 20px;
+      font-size: 13px; font-weight: 500;
+    }
+    .alert-error   { background: #ffe0e0; color: #c00; border-left: 3px solid #c00; }
+    .alert-success { background: #e0ffe6; color: #080; border-left: 3px solid #080; }
+
+    @media (max-width: 768px) {
+      .login-shell { height: auto; overflow: visible; }
+      html, body { overflow: auto; }
+      .login-bg { display: none; }
+      .login-panel { max-width: 100%; padding: 48px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-shell">
+
+    <!-- Left: moving image panel -->
+    <div class="login-bg">
+      <img src="/Assets/login3.jpg" alt="Adidas" class="login-bg-img" />
+      <div class="login-bg-overlay"></div>
+      <div class="login-bg-brand">
+        <img src="/Assets/logo.jpg" alt="Adidas" class="login-bg-brand-logo" />
+        <div class="login-bg-tagline">Impossible<br>Is Nothing.</div>
+      </div>
+    </div>
+
+    <!-- Right: form panel -->
+    <div class="login-panel">
+      <img src="/Assets/logo.jpg" alt="Adidas" class="login-panel-logo" />
+      <h1 class="login-title">Sign In</h1>
+      <p class="login-subtitle">Welcome back to adidas</p>
+
+      <% if (locals.error && error.length) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+      <% if (locals.success && success.length) { %>
+        <div class="alert alert-success"><%= success %></div>
+      <% } %>
+
+      <form action="/auth/login" method="POST">
+        <div class="form-group">
+          <label class="form-label" for="email">Email <span style="color:#e00">*</span></label>
+          <input type="email" id="email" name="email" class="form-input"
+                 placeholder="you@example.com" required autofocus autocomplete="email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password">Password <span style="color:#e00">*</span></label>
+          <div style="position:relative;">
+            <input type="password" id="password" name="password" class="form-input"
+                   placeholder="••••••••" required autocomplete="current-password"
+                   style="padding-right:44px;" />
+            <button type="button" onclick="togglePassword()" style="
+              position:absolute;
+              right:12px;
+              top:50%;
+              transform:translateY(-50%);
+              background:none;
+              border:none;
+              cursor:pointer;
+              padding:0;
+              color:#767677;
+            ">
+              <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                   viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                   style="display:none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="login-divider"></div>
+
+        <button type="submit" class="btn-block">Sign In</button>
+      </form>
+
+      <p class="login-back">Don't have an account? <a href="/auth/register">Register</a></p>
+      <p class="login-back" style="margin-top:10px;"><a href="/">← Back to store</a></p>
+    </div>
+
+  </div>
+
+  <script>
+    function togglePassword() {
+      const input  = document.getElementById('password');
+      const open   = document.getElementById('eyeOpen');
+      const closed = document.getElementById('eyeClosed');
+      if (input.type === 'password') {
+        input.type           = 'text';
+        open.style.display   = 'none';
+        closed.style.display = 'block';
+      } else {
+        input.type           = 'password';
+        open.style.display   = 'block';
+        closed.style.display = 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,255 @@
+<%# views/admin/product-form.ejs – used for both Create and Edit %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/admin.css" />
+</head>
+<body class="admin-body">
+
+  <%- include('../partials/admin-sidebar') %>
+
+  <main class="admin-main">
+
+    <div class="admin-page-header">
+      <div>
+        <h1 class="admin-page-title"><%= product ? 'Edit Product' : 'Add New Product' %></h1>
+        <p class="admin-page-subtitle">
+          <%= product ? `Editing: ${product.name}` : 'Fill in the details below to add a new product.' %>
+        </p>
+      </div>
+      <a href="/admin" class="btn btn-secondary">← Back to Dashboard</a>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <!-- ── Product form ────────────────────────────────────────────────────── -->
+    <!--
+      enctype="multipart/form-data" is required for file (image) upload.
+      The hidden _method field fakes a PUT verb for the update route
+      because HTML <form> only supports GET and POST.
+    -->
+    <form
+      action="<%= action %>"
+      method="<%= method %>"
+      enctype="multipart/form-data"
+      class="product-form"
+      novalidate
+      id="productForm"
+    >
+      <!-- Hidden override for PUT (edit mode) -->
+      <% if (product) { %>
+        <input type="hidden" name="_method" value="PUT" />
+      <% } %>
+
+      <div class="form-grid">
+
+        <!-- Left column -->
+        <div class="form-col">
+
+          <!-- Name -->
+          <div class="form-group">
+            <label for="name" class="form-label">Product Name <span class="required">*</span></label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-input"
+              value="<%= product ? product.name : '' %>"
+              placeholder="e.g. Ultraboost 5"
+              required
+            />
+            <span class="form-hint">Must not be empty.</span>
+          </div>
+
+          <!-- Price -->
+          <div class="form-group">
+            <label for="price" class="form-label">Price (USD) <span class="required">*</span></label>
+            <div class="input-prefix-wrap">
+              <span class="input-prefix">$</span>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                class="form-input input-with-prefix"
+                value="<%= product ? product.price : '' %>"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="form-group">
+            <label for="category" class="form-label">Category <span class="required">*</span></label>
+            <select id="category" name="category" class="form-select" required>
+              <option value="">-- Select category --</option>
+              <% ['Running','Football','Originals','Training','Women','Kids','Men'].forEach(cat => { %>
+                <option value="<%= cat %>" <%= product && product.category === cat ? 'selected' : '' %>>
+                  <%= cat %>
+                </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <!-- Label -->
+          <div class="form-group">
+            <label for="label" class="form-label">Label</label>
+            <input
+              type="text"
+              id="label"
+              name="label"
+              class="form-input"
+              value="<%= product ? product.label : '' %>"
+              placeholder="e.g. Running, Icon, New Arrival"
+            />
+            <span class="form-hint">Short label shown on the product card.</span>
+          </div>
+
+        </div>
+
+        <!-- Right column -->
+        <div class="form-col">
+
+          <!-- Stock -->
+          <div class="form-group">
+            <label for="stock" class="form-label">Stock Quantity</label>
+            <input
+              type="number"
+              id="stock"
+              name="stock"
+              class="form-input"
+              value="<%= product ? product.stock : 0 %>"
+              min="0"
+              step="1"
+            />
+          </div>
+
+          <!-- Rating -->
+          <div class="form-group">
+            <label for="rating" class="form-label">Rating (0 – 5)</label>
+            <input
+              type="number"
+              id="rating"
+              name="rating"
+              class="form-input"
+              value="<%= product ? product.rating : 4 %>"
+              min="0"
+              max="5"
+              step="0.1"
+            />
+          </div>
+
+          <!-- Badge -->
+          <div class="form-group">
+            <label for="badge" class="form-label">Promo Badge</label>
+            <input
+              type="text"
+              id="badge"
+              name="badge"
+              class="form-input"
+              value="<%= product && product.badge ? product.badge : '' %>"
+              placeholder="e.g. -30%, New, Sale"
+            />
+            <span class="form-hint">Leave empty for no badge.</span>
+          </div>
+
+          <!-- Image upload -->
+          <div class="form-group">
+            <label class="form-label">Product Image</label>
+
+            <!-- Current image preview (edit mode) -->
+            <% if (product && product.image) { %>
+              <div class="current-image-wrap">
+                <img
+                  src="/<%= product.image %>"
+                  alt="Current image"
+                  class="current-image-preview"
+                  onerror="this.style.display='none'"
+                />
+                <p class="form-hint">Current image. Upload a new one to replace it.</p>
+              </div>
+            <% } %>
+
+            <!-- File input -->
+            <div class="file-input-wrap">
+              <label class="file-label" for="image">
+                <span class="file-icon">📁</span>
+                <span id="fileNameDisplay">
+                  <%= product && product.image ? 'Choose new image to replace' : 'Choose image file…' %>
+                </span>
+              </label>
+              <input
+                type="file"
+                id="image"
+                name="image"
+                class="file-input-hidden"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onchange="updateFileName(this)"
+              />
+            </div>
+            <span class="form-hint">Accepted: JPG, PNG, WEBP, GIF · Max 5 MB. Stored in <code>/public/uploads/</code></span>
+
+            <!-- Image preview before upload -->
+            <img id="imagePreview" class="image-preview-new" src="#" alt="Preview" hidden />
+          </div>
+
+        </div>
+      </div><!-- /.form-grid -->
+
+      <!-- Form actions -->
+      <div class="form-actions">
+        <a href="/admin" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <%= product ? 'Save Changes' : 'Create Product' %>
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <script>
+    // Show selected filename in custom file button
+    function updateFileName(input) {
+      const display = document.getElementById('fileNameDisplay');
+      display.textContent = input.files[0] ? input.files[0].name : 'No file chosen';
+
+      // Live preview
+      const preview = document.getElementById('imagePreview');
+      if (input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          preview.src = e.target.result;
+          preview.hidden = false;
+        };
+        reader.readAsDataURL(input.files[0]);
+      } else {
+        preview.hidden = true;
+      }
+    }
+
+    // Client-side validation before submit
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+      const name     = document.getElementById('name').value.trim();
+      const price    = document.getElementById('price').value;
+      const category = document.getElementById('category').value;
+      const errors   = [];
+
+      if (!name)     errors.push('Product name is required.');
+      if (!price || parseFloat(price) < 0) errors.push('A valid price is required.');
+      if (!category) errors.push('Please select a category.');
+
+      if (errors.length) {
+        e.preventDefault();
+        alert('Please fix the following:\n\n• ' + errors.join('\n• '));
+      }
+    });
+  </script>
+</body>
+</html>

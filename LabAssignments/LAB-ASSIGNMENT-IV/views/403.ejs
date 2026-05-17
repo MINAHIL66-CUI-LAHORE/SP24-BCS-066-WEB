@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+
+<section style="
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+  margin-top: 100px;
+">
+  <h1 style="
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:120px;
+    font-weight:900;
+    line-height:1;
+    color:#0C0C0C;
+    letter-spacing:-2px;
+  ">403</h1>
+
+  <p style="
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:#767676;
+    margin:12px 0 8px;
+  ">Admin Access Only</p>
+
+  <h2 style="
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:32px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    margin:8px 0 16px;
+  ">Access Denied</h2>
+
+  <p style="
+    font-size:15px;
+    color:#767676;
+    margin-bottom:32px;
+    max-width:400px;
+    line-height:1.6;
+  "><%= message %></p>
+
+  <div style="display:flex; gap:16px;">
+    <a href="/" style="
+      display:inline-block;
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:14px;
+      font-weight:700;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      padding:14px 32px;
+      background:#0C0C0C;
+      color:#fff;
+      border:2px solid #0C0C0C;
+    ">Go Home</a>
+
+    <a href="/products" style="
+      display:inline-block;
+      font-family:'Barlow Condensed',sans-serif;
+      font-size:14px;
+      font-weight:700;
+      letter-spacing:1.5px;
+      text-transform:uppercase;
+      padding:14px 32px;
+      background:transparent;
+      color:#0C0C0C;
+      border:2px solid #0C0C0C;
+    ">Shop Now</a>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
