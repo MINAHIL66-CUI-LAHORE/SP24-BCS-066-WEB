@@ -128,7 +128,7 @@ final-lab/
 Use these test credentials if already seeded:
 ```
 Email:    mini@gmail.com
-Password: YourPassword1!
+Password: Helloworld123*
 ```
 
 #### 3. Shopping Cart
