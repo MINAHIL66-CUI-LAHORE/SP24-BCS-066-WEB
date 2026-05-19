@@ -1,0 +1,560 @@
+<%# views/sales.ejs — Sales Dashboard child view (no html/head/body tags) %>
+
+<!-- ── Inline styles for the sales dashboard ──────────────────────────────── -->
+<style>
+  /* ── KPI stat cards ─────────────────────────────────────────────────────── */
+  .sales-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: #fff;
+    border-radius: 4px;
+    padding: 24px 28px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    border-left: 4px solid #0C0C0C;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow .2s;
+  }
+  .stat-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.13); }
+
+  .stat-card--revenue  { border-left-color: #16a34a; }
+  .stat-card--orders   { border-left-color: #0C0C0C; }
+  .stat-card--avg      { border-left-color: #2563eb; }
+  .stat-card--pending  { border-left-color: #d97706; }
+
+  .stat-card__label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: #767676;
+    margin-bottom: 8px;
+  }
+
+  .stat-card__value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 38px; font-weight: 800;
+    color: #0C0C0C;
+    line-height: 1;
+    transition: opacity .3s;
+  }
+
+  .stat-card__sub {
+    font-size: 12px;
+    color: #767676;
+    margin-top: 6px;
+  }
+
+  /* ── Two-column lower section ────────────────────────────────────────────── */
+  .sales-lower {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  @media (max-width: 900px) { .sales-lower { grid-template-columns: 1fr; } }
+
+  /* ── Panel card (used for top products & category breakdown) ─────────────── */
+  .panel-card {
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    overflow: hidden;
+  }
+
+  .panel-card__header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #e5e5e5;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .panel-card__title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .8px;
+    color: #0C0C0C;
+  }
+
+  .panel-card__body { padding: 0; }
+
+  /* Top-products list */
+  .top-product-row {
+    display: flex; align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid #f5f5f5;
+    gap: 14px;
+  }
+  .top-product-row:last-child { border-bottom: none; }
+
+  .rank-badge {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: #f5f5f5;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: #333; flex-shrink: 0;
+  }
+  .rank-badge--gold   { background: #fef3c7; color: #92400e; }
+  .rank-badge--silver { background: #f1f5f9; color: #334155; }
+  .rank-badge--bronze { background: #fff7ed; color: #9a3412; }
+
+  .top-product-name { flex: 1; font-size: 13px; font-weight: 600; color: #0C0C0C; }
+  .top-product-units { font-size: 12px; color: #767676; white-space: nowrap; }
+  .top-product-rev   { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; font-weight: 700; white-space: nowrap; }
+
+  /* Category bar chart rows */
+  .cat-row { padding: 12px 24px; border-bottom: 1px solid #f5f5f5; }
+  .cat-row:last-child { border-bottom: none; }
+
+  .cat-row__meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 7px;
+  }
+  .cat-name { font-size: 13px; font-weight: 600; color: #333; }
+  .cat-rev  { font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; }
+
+  .cat-bar-track {
+    height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden;
+  }
+  .cat-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: #0C0C0C;
+    transition: width 0.6s ease;
+  }
+
+  /* ── Recent orders table ─────────────────────────────────────────────────── */
+  .recent-orders-card {
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    overflow: hidden;
+    margin-bottom: 32px;
+  }
+
+  .orders-table { width: 100%; border-collapse: collapse; }
+  .orders-table th, .orders-table td {
+    padding: 13px 20px;
+    text-align: left;
+    font-size: 13px;
+  }
+  .orders-table th {
+    background: #f5f5f5;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; text-transform: uppercase;
+    letter-spacing: .6px; color: #333;
+    border-bottom: 1px solid #e5e5e5;
+  }
+  .orders-table tbody tr { border-bottom: 1px solid #f5f5f5; transition: background .12s; }
+  .orders-table tbody tr:last-child { border-bottom: none; }
+  .orders-table tbody tr:hover { background: #fafafa; }
+
+  /* Status badges */
+  .status-badge {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 99px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+  .status-badge--pending    { background: #fef3c7; color: #92400e; }
+  .status-badge--processing { background: #dbeafe; color: #1e40af; }
+  .status-badge--shipped    { background: #e0e7ff; color: #3730a3; }
+  .status-badge--delivered  { background: #dcfce7; color: #166534; }
+  .status-badge--cancelled  { background: #fee2e2; color: #991b1b; }
+
+  /* ── Live indicator ───────────────────────────────────────────────────────── */
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px;
+    color: #16a34a;
+  }
+  .live-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #16a34a;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: .4; transform: scale(1.3); }
+  }
+
+  /* ── Refresh countdown ────────────────────────────────────────────────────── */
+  .refresh-meta {
+    font-size: 12px; color: #767676;
+    margin-top: 4px;
+  }
+
+  /* ── Loading shimmer (shown briefly during AJAX refresh) ─────────────────── */
+  .stat-card__value.is-loading {
+    opacity: .35;
+  }
+
+  /* ── Empty-state row ─────────────────────────────────────────────────────── */
+  .empty-row td {
+    text-align: center; color: #767676;
+    padding: 40px; font-size: 14px;
+  }
+</style>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     PAGE HEADER
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-page-header">
+  <div>
+    <h1 class="admin-page-title">Sales Dashboard</h1>
+    <p class="admin-page-subtitle">
+      Real-time store performance &nbsp;·&nbsp;
+      <span class="live-badge">
+        <span class="live-dot"></span> Live — updates every 10 s
+      </span>
+    </p>
+    <p class="refresh-meta">
+      Last refreshed: <span id="lastRefreshed"><%= new Date(generatedAt).toLocaleTimeString() %></span>
+      &nbsp;·&nbsp; Next in <span id="countdown">10</span> s
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     KPI STAT CARDS
+     Values are pre-rendered by EJS on the first load then updated by jQuery.
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="sales-grid">
+
+  <!-- Total Revenue -->
+  <div class="stat-card stat-card--revenue">
+    <div class="stat-card__label">Total Revenue</div>
+    <div class="stat-card__value" id="statRevenue">
+      $<%= totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+    </div>
+    <div class="stat-card__sub">All non-cancelled orders</div>
+  </div>
+
+  <!-- Total Orders -->
+  <div class="stat-card stat-card--orders">
+    <div class="stat-card__label">Total Orders</div>
+    <div class="stat-card__value" id="statOrders">
+      <%= totalOrders.toLocaleString() %>
+    </div>
+    <div class="stat-card__sub">Across all statuses</div>
+  </div>
+
+  <!-- Average Order Value -->
+  <div class="stat-card stat-card--avg">
+    <div class="stat-card__label">Avg. Order Value</div>
+    <div class="stat-card__value" id="statAvg">
+      $<%= avgOrderValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+    </div>
+    <div class="stat-card__sub">Revenue ÷ total orders</div>
+  </div>
+
+  <!-- Pending Orders -->
+  <div class="stat-card stat-card--pending">
+    <div class="stat-card__label">Pending Orders</div>
+    <div class="stat-card__value" id="statPending">
+      <%= pendingOrders.toLocaleString() %>
+    </div>
+    <div class="stat-card__sub">Awaiting processing</div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     LOWER SECTION – Top Products  |  Revenue by Category
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="sales-lower">
+
+  <!-- Top-Selling Products -->
+  <div class="panel-card">
+    <div class="panel-card__header">
+      <span class="panel-card__title">Top Selling Products</span>
+    </div>
+    <div class="panel-card__body">
+      <div id="topProductsList">
+        <% if (topProducts && topProducts.length > 0) { %>
+          <% topProducts.forEach((p, idx) => { %>
+            <div class="top-product-row">
+              <div class="rank-badge <%= idx === 0 ? 'rank-badge--gold' : idx === 1 ? 'rank-badge--silver' : idx === 2 ? 'rank-badge--bronze' : '' %>">
+                <%= idx + 1 %>
+              </div>
+              <span class="top-product-name"><%= p.productName %></span>
+              <span class="top-product-units"><%= p.unitsSold %> units</span>
+              <span class="top-product-rev">$<%= p.revenue.toFixed(2) %></span>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="top-product-row" style="color:#767676;font-size:13px;">
+            No sales data yet.
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue by Category -->
+  <div class="panel-card">
+    <div class="panel-card__header">
+      <span class="panel-card__title">Revenue by Category</span>
+    </div>
+    <div class="panel-card__body" style="padding: 16px 0;">
+      <div id="categoryList">
+        <%
+          // Calculate max revenue for proportional bar widths
+          const maxCatRev = categoryRevenue.length > 0
+            ? Math.max(...categoryRevenue.map(c => c.revenue))
+            : 1;
+        %>
+        <% if (categoryRevenue && categoryRevenue.length > 0) { %>
+          <% categoryRevenue.forEach(cat => { %>
+            <%
+              const pct = maxCatRev > 0
+                ? Math.round((cat.revenue / maxCatRev) * 100)
+                : 0;
+            %>
+            <div class="cat-row">
+              <div class="cat-row__meta">
+                <span class="cat-name"><%= cat._id || 'Uncategorised' %></span>
+                <span class="cat-rev">$<%= cat.revenue.toFixed(2) %></span>
+              </div>
+              <div class="cat-bar-track">
+                <div class="cat-bar-fill" style="width: <%= pct %>%;"></div>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="cat-row" style="color:#767676;font-size:13px;">No category data yet.</div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     RECENT ORDERS TABLE
+     ══════════════════════════════════════════════════════════════════════════ -->
+<div class="recent-orders-card">
+  <div class="panel-card__header">
+    <span class="panel-card__title">Recent Orders</span>
+    <span style="font-size:12px;color:#767676;">Last 8 orders</span>
+  </div>
+  <div style="overflow-x:auto;">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="recentOrdersTbody">
+        <% if (recentOrders && recentOrders.length > 0) { %>
+          <% recentOrders.forEach(order => { %>
+            <tr>
+              <td style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:#767676;">
+                #<%= String(order._id).slice(-8).toUpperCase() %>
+              </td>
+              <td><%= new Date(order.createdAt).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) %></td>
+              <td><%= order.items.length %> item<%= order.items.length !== 1 ? 's' : '' %></td>
+              <td style="font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;">
+                $<%= order.total.toFixed(2) %>
+              </td>
+              <td>
+                <span class="status-badge status-badge--<%= order.status %>"><%= order.status %></span>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr class="empty-row">
+            <td colspan="5">No orders placed yet. Orders will appear here once customers start purchasing.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════════
+     CLIENT-SIDE JQUERY POLLING SCRIPT
+     ──────────────────────────────────────────────────────────────────────────
+     Requirements met:
+       ✅ Runs once the DOM is ready  ($(document).ready)
+       ✅ Uses setInterval every 10 000 ms (10 seconds)
+       ✅ Uses $.ajax to call GET /api/sales-data
+       ✅ Updates DOM elements by ID without a full page reload
+       ✅ Shows a visual shimmer during the fetch
+       ✅ Includes countdown timer so admins see when the next update fires
+     jQuery is loaded by the parent layout (views/layouts/admin.ejs).
+     ══════════════════════════════════════════════════════════════════════════ -->
+<script>
+$(document).ready(function () {
+
+  /* ── Helper: format a number as a USD dollar string ─────────────────────── */
+  function formatMoney(num) {
+    return '$' + Number(num).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  /* ── Helper: format an integer with thousand-separators ─────────────────── */
+  function formatInt(num) {
+    return Number(num).toLocaleString();
+  }
+
+  /* ── Helper: build the top-products HTML list ────────────────────────────── */
+  function buildTopProducts(products) {
+    if (!products || products.length === 0) {
+      return '<div class="top-product-row" style="color:#767676;font-size:13px;">No sales data yet.</div>';
+    }
+
+    var rankClasses = ['rank-badge--gold', 'rank-badge--silver', 'rank-badge--bronze', '', ''];
+    return products.map(function (p, idx) {
+      return (
+        '<div class="top-product-row">' +
+          '<div class="rank-badge ' + (rankClasses[idx] || '') + '">' + (idx + 1) + '</div>' +
+          '<span class="top-product-name">' + $('<span>').text(p.productName).html() + '</span>' +
+          '<span class="top-product-units">' + p.unitsSold + ' units</span>' +
+          '<span class="top-product-rev">' + formatMoney(p.revenue) + '</span>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  /* ── Helper: build the category bar-chart HTML ───────────────────────────── */
+  function buildCategoryBars(categories) {
+    if (!categories || categories.length === 0) {
+      return '<div class="cat-row" style="color:#767676;font-size:13px;">No category data yet.</div>';
+    }
+
+    var maxRev = Math.max.apply(null, categories.map(function (c) { return c.revenue; }));
+    if (maxRev === 0) maxRev = 1;
+
+    return categories.map(function (cat) {
+      var pct = Math.round((cat.revenue / maxRev) * 100);
+      return (
+        '<div class="cat-row">' +
+          '<div class="cat-row__meta">' +
+            '<span class="cat-name">' + $('<span>').text(cat._id || 'Uncategorised').html() + '</span>' +
+            '<span class="cat-rev">' + formatMoney(cat.revenue) + '</span>' +
+          '</div>' +
+          '<div class="cat-bar-track">' +
+            '<div class="cat-bar-fill" style="width:' + pct + '%;"></div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  /* ── Helper: build the recent-orders table rows ──────────────────────────── */
+  function buildOrderRows(orders) {
+    if (!orders || orders.length === 0) {
+      return '<tr class="empty-row"><td colspan="5">No orders placed yet.</td></tr>';
+    }
+
+    var statusClasses = {
+      pending:    'status-badge--pending',
+      processing: 'status-badge--processing',
+      shipped:    'status-badge--shipped',
+      delivered:  'status-badge--delivered',
+      cancelled:  'status-badge--cancelled',
+    };
+
+    return orders.map(function (order) {
+      var shortId = String(order._id).slice(-8).toUpperCase();
+      var dateStr = new Date(order.createdAt).toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric',
+      });
+      var itemCount = order.items.length;
+      var statusClass = statusClasses[order.status] || '';
+
+      return (
+        '<tr>' +
+          '<td style="font-family:\'Barlow Condensed\',sans-serif;font-size:12px;color:#767676;">#' + shortId + '</td>' +
+          '<td>' + dateStr + '</td>' +
+          '<td>' + itemCount + ' item' + (itemCount !== 1 ? 's' : '') + '</td>' +
+          '<td style="font-family:\'Barlow Condensed\',sans-serif;font-size:15px;font-weight:700;">' + formatMoney(order.total) + '</td>' +
+          '<td><span class="status-badge ' + statusClass + '">' + order.status + '</span></td>' +
+        '</tr>'
+      );
+    }).join('');
+  }
+
+  /* ── Core AJAX polling function ──────────────────────────────────────────── */
+  function refreshDashboard() {
+
+    // Visual feedback: dim the KPI values while fetching
+    $('.stat-card__value').addClass('is-loading');
+
+    $.ajax({
+      url:      '/sales/api/sales-data',
+      method:   'GET',
+      dataType: 'json',
+
+      success: function (response) {
+        if (!response.success) {
+          console.warn('[Sales Dashboard] API returned success: false', response);
+          return;
+        }
+
+        var d = response.data;   // { totalRevenue, totalOrders, avgOrderValue, … }
+
+        /* ── Update KPI cards ─────────────────────────────────────────────── */
+        $('#statRevenue').text(formatMoney(d.totalRevenue));
+        $('#statOrders').text(formatInt(d.totalOrders));
+        $('#statAvg').text(formatMoney(d.avgOrderValue));
+        $('#statPending').text(formatInt(d.pendingOrders));
+
+        /* ── Update top products list ─────────────────────────────────────── */
+        $('#topProductsList').html(buildTopProducts(d.topProducts));
+
+        /* ── Update category revenue bars ─────────────────────────────────── */
+        $('#categoryList').html(buildCategoryBars(d.categoryRevenue));
+
+        /* ── Update recent orders table ───────────────────────────────────── */
+        $('#recentOrdersTbody').html(buildOrderRows(d.recentOrders));
+
+        /* ── Refresh timestamp ────────────────────────────────────────────── */
+        var now = new Date(d.generatedAt);
+        $('#lastRefreshed').text(now.toLocaleTimeString());
+      },
+
+      error: function (xhr, status, err) {
+        console.error('[Sales Dashboard] Polling error:', status, err);
+      },
+
+      complete: function () {
+        // Remove loading shimmer regardless of success/failure
+        $('.stat-card__value').removeClass('is-loading');
+        // Reset countdown to 10
+        $('#countdown').text('10');
+      },
+    });
+  }
+
+  /* ── Countdown ticker (updates every second) ─────────────────────────────── */
+  var secondsLeft = 10;
+  setInterval(function () {
+    secondsLeft -= 1;
+    if (secondsLeft < 0) secondsLeft = 10;
+    $('#countdown').text(secondsLeft);
+  }, 1000);
+
+  /* ── Main polling interval – fires every 10 000 ms (10 seconds) ─────────── */
+  setInterval(refreshDashboard, 10000);
+
+  /* ── Also run once immediately so the dashboard is fresh on load ─────────── */
+  // (optional – remove the line below if you prefer to wait for the first tick)
+  // refreshDashboard();
+
+});
+</script>

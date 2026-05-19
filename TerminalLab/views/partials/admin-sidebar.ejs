@@ -1,0 +1,66 @@
+<!-- views/partials/admin-sidebar.ejs -->
+<!-- Hamburger button (mobile only) -->
+<button class="hamburger" id="sidebarHamburgerBtn" aria-label="Toggle menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+<!-- Backdrop (mobile only) -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+<aside class="admin-sidebar" id="adminSidebar">
+  <!-- Brand -->
+  <div class="sidebar-brand">
+    <img src="/Assets/logo.jpg" alt="Adidas" class="sidebar-logo" />
+    <span class="sidebar-brand-text">Admin Panel</span>
+  </div>
+  <!-- Navigation links -->
+  <nav class="sidebar-nav">
+    <a href="/admin" class="sidebar-link <%= typeof title !== 'undefined' && title.includes('Product Dashboard') ? 'active' : '' %>">
+      Dashboard
+    </a>
+    <a href="/sales" class="sidebar-link <%= typeof title !== 'undefined' && title.includes('Sales Dashboard') ? 'active' : '' %>">
+       Sales Dashboard
+    </a>
+    <a href="/admin/products/new" class="sidebar-link <%= typeof title !== 'undefined' && title.includes('Add') ? 'active' : '' %>">
+      Add Product
+    </a>
+    <a href="/products" class="sidebar-link" target="_blank">
+      View Store
+    </a>
+  </nav>
+  <!-- Logout -->
+  <div class="sidebar-footer">
+    <a href="/admin/logout" class="sidebar-link sidebar-logout">
+      Logout
+    </a>
+  </div>
+</aside>
+<script>
+  const hamburger = document.getElementById('sidebarHamburgerBtn');
+  const sidebar   = document.getElementById('adminSidebar');
+  const backdrop  = document.getElementById('sidebarBackdrop');
+  function openSidebar() {
+    sidebar.classList.add('is-open');
+    backdrop.classList.add('is-visible');
+    hamburger.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('is-open');
+    backdrop.classList.remove('is-visible');
+    hamburger.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+  hamburger.addEventListener('click', () => {
+    sidebar.classList.contains('is-open') ? closeSidebar() : openSidebar();
+  });
+  backdrop.addEventListener('click', closeSidebar);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeSidebar();
+  });
+  document.querySelectorAll('.sidebar-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+</script>

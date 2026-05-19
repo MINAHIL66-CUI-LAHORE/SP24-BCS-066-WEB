@@ -1,0 +1,134 @@
+<%# views/admin/dashboard.ejs – Admin product table %>
+
+<!-- ── Page header ───────────────────────────────────────── -->
+<div class="admin-page-header">
+  <div>
+    <h1 class="admin-page-title">Product Dashboard</h1>
+    <p class="admin-page-subtitle"><%= products.length %> product<%= products.length !== 1 ? 's' : '' %> in database</p>
+  </div>
+  <a href="/admin/products/new" class="btn btn-primary">
+    <span class="btn-icon">＋</span> Add New Product
+  </a>
+</div>
+
+<!-- ── Flash messages ────────────────────────────────────── -->
+<% if (success) { %>
+  <div class="alert alert-success"><%= success %></div>
+<% } %>
+<% if (error) { %>
+  <div class="alert alert-error"><%= error %></div>
+<% } %>
+
+<!-- ── Products table ────────────────────────────────────── -->
+<div class="table-card">
+  <% if (products.length === 0) { %>
+    <div class="empty-state">
+      <p>No products found.</p>
+      <a href="/admin/products/new" class="btn btn-primary">Add your first product</a>
+    </div>
+  <% } else { %>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th>Stock</th>
+          <th>Rating</th>
+          <th>Badge</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(p => { %>
+          <tr>
+            <td>
+              <% if (p.image) { %>
+                <img
+                  src="/<%= p.image %>"
+                  alt="<%= p.name %>"
+                  class="table-thumb"
+                  onerror="this.src='/Assets/logo.jpg'"
+                />
+              <% } else { %>
+                <div class="table-thumb table-thumb--placeholder">No img</div>
+              <% } %>
+            </td>
+            <td class="product-name"><%= p.name %></td>
+            <td><span class="badge badge-category"><%= p.category %></span></td>
+            <td class="price">$<%= p.price.toFixed(2) %></td>
+            <td class="<%= p.stock < 5 ? 'stock-low' : '' %>"><%= p.stock %></td>
+            <td>
+              <span class="stars">
+                <% for (let i = 1; i <= 5; i++) { %>
+                  <%= i <= Math.round(p.rating) ? '★' : '☆' %>
+                <% } %>
+              </span>
+              (<%= p.rating %>)
+            </td>
+            <td>
+              <% if (p.badge) { %>
+                <span class="badge badge-promo"><%= p.badge %></span>
+              <% } else { %>
+                <span class="text-muted">—</span>
+              <% } %>
+            </td>
+            <td class="actions-cell">
+              <a href="/admin/products/<%= p._id %>/edit" class="btn btn-sm btn-edit">Edit</a>
+              <button
+                class="btn btn-sm btn-delete"
+                onclick="confirmDelete('<%= p._id %>', '<%= p.name.replace(/'/g, '') %>')"
+              >Delete</button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</div>
+
+<!-- ── Delete confirmation modal ──────────────────────────── -->
+<div id="deleteModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal">
+    <div class="modal-icon">⚠️</div>
+    <h2 id="modalTitle" class="modal-title">Delete Product?</h2>
+    <p id="modalMsg" class="modal-msg"></p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <form id="deleteForm" method="POST" style="display:inline;">
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  function confirmDelete(id, name) {
+    document.getElementById('modalMsg').textContent =
+      `Are you sure you want to permanently delete "${name}"? This cannot be undone.`;
+    document.getElementById('deleteForm').action = `/admin/products/${id}/delete`;
+    document.getElementById('deleteModal').hidden = false;
+    document.getElementById('deleteModal').focus();
+  }
+
+  function closeModal() {
+    document.getElementById('deleteModal').hidden = true;
+  }
+
+  document.getElementById('deleteModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(el => {
+      el.style.transition = 'opacity 0.4s';
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 400);
+    });
+  }, 4000);
+</script>

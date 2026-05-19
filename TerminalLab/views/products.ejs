@@ -1,0 +1,162 @@
+<%- include('partials/header') %>
+
+<!-- ===== PRODUCT CATALOG ===== -->
+<section class="catalog" style="padding-top: 120px;">
+
+  <!-- Page heading -->
+  <div class="catalog__heading">
+    <h1>Product Catalog</h1>
+    <p class="catalog__count">
+      Showing <strong><%= products.length %></strong> of <strong><%= totalProducts %></strong> products
+      <% if (filters.category) { %> in <strong><%= filters.category %></strong><% } %>
+    </p>
+  </div>
+
+  <!-- ── Filter / Search bar ───────────────────────────────── -->
+  <form class="catalog__filters" method="GET" action="/products" id="filterForm">
+
+    <!-- Search -->
+    <div class="filter-group filter-group--search">
+      <input
+        type="text"
+        name="search"
+        placeholder="Search products…"
+        value="<%= filters.search %>"
+        class="filter-input"
+      />
+      <button type="submit" class="btn btn--black">Search</button>
+    </div>
+
+    <!-- Category -->
+    <div class="filter-group">
+      <label class="filter-label">Category</label>
+      <select name="category" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+        <option value="">All</option>
+        <% categories.forEach(function(cat) { %>
+          <option value="<%= cat %>" <%= filters.category === cat ? 'selected' : '' %>>
+            <%= cat %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <!-- Price range -->
+    <div class="filter-group filter-group--price">
+      <label class="filter-label">Price ($)</label>
+      <div class="price-range">
+        <input type="number" name="minPrice" placeholder="Min" value="<%= filters.minPrice %>"
+               class="filter-input filter-input--sm" min="0" step="0.01"/>
+        <span class="price-dash">–</span>
+        <input type="number" name="maxPrice" placeholder="Max" value="<%= filters.maxPrice %>"
+               class="filter-input filter-input--sm" min="0" step="0.01"/>
+      </div>
+    </div>
+
+    <!-- Sort -->
+    <div class="filter-group">
+      <label class="filter-label">Sort By</label>
+      <select name="sortBy" class="filter-select" onchange="document.getElementById('filterForm').submit()">
+        <option value="default"    <%= filters.sortBy === 'default'    ? 'selected' : '' %>>Featured</option>
+        <option value="price-asc"  <%= filters.sortBy === 'price-asc'  ? 'selected' : '' %>>Price: Low → High</option>
+        <option value="price-desc" <%= filters.sortBy === 'price-desc' ? 'selected' : '' %>>Price: High → Low</option>
+        <option value="rating"     <%= filters.sortBy === 'rating'     ? 'selected' : '' %>>Top Rated</option>
+        <option value="name"       <%= filters.sortBy === 'name'       ? 'selected' : '' %>>Name A–Z</option>
+      </select>
+    </div>
+
+    <!-- Clear filters -->
+    <a href="/products" class="btn btn--outline">Clear</a>
+
+  </form>
+
+  <!-- ── Product Grid ──────────────────────────────────────── -->
+  <% if (products.length === 0) { %>
+    <div class="catalog__empty">
+      <p>No products match your filters.</p>
+      <a href="/products" class="btn btn--black">View All Products</a>
+    </div>
+  <% } else { %>
+    <div class="catalog__grid">
+      <% products.forEach(function(product) { %>
+        <div class="catalog-card">
+
+          <!-- Badge -->
+          <% if (product.badge) { %>
+            <span class="catalog-card__badge"><%= product.badge %></span>
+          <% } %>
+
+          <!-- Image -->
+          <div class="catalog-card__img-wrap">
+            <img
+              src="/<%= product.image %>"
+              alt="<%= product.name %>"
+              onerror="this.src='/Assets/ultra-boost.jpg'"
+            />
+          </div>
+
+          <!-- Info -->
+          <div class="catalog-card__info">
+            <span class="catalog-card__cat"><%= product.category %></span>
+            <h3 class="catalog-card__name"><%= product.name %></h3>
+
+            <!-- Star rating -->
+            <div class="catalog-card__rating" title="<%= product.rating %>/5">
+              <% for (let i = 1; i <= 5; i++) { %>
+                <span class="star <%= i <= Math.round(product.rating) ? 'star--filled' : '' %>">&#9733;</span>
+              <% } %>
+              <span class="rating-val">(<%= product.rating.toFixed(1) %>)</span>
+            </div>
+
+            <div class="catalog-card__meta">
+              <span class="catalog-card__price">$<%= product.price.toFixed(2) %></span>
+              <span class="catalog-card__stock <%= product.stock < 10 ? 'low-stock' : '' %>">
+                <%= product.stock > 0 ? `${product.stock} in stock` : 'Out of stock' %>
+              </span>
+            </div>
+
+            <a href="/products/<%= product._id %>" class="btn btn--black btn--full">View Product</a>
+          </div>
+
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+
+  <!-- ── Pagination ─────────────────────────────────────────── -->
+  <% if (totalPages > 1) { %>
+    <nav class="pagination" aria-label="Product pages">
+
+      <!-- Previous -->
+      <% if (currentPage > 1) { %>
+        <a href="/products?page=<%= currentPage - 1 %>&search=<%= filters.search %>&category=<%= filters.category %>&minPrice=<%= filters.minPrice %>&maxPrice=<%= filters.maxPrice %>&sortBy=<%= filters.sortBy %>"
+           class="pagination__btn">&#8592; Prev</a>
+      <% } else { %>
+        <span class="pagination__btn pagination__btn--disabled">&#8592; Prev</span>
+      <% } %>
+
+      <!-- Page numbers -->
+      <% pageNums.forEach(function(num) { %>
+        <% if (num === null) { %>
+          <span class="pagination__ellipsis">…</span>
+        <% } else { %>
+          <a href="/products?page=<%= num %>&search=<%= filters.search %>&category=<%= filters.category %>&minPrice=<%= filters.minPrice %>&maxPrice=<%= filters.maxPrice %>&sortBy=<%= filters.sortBy %>"
+             class="pagination__btn <%= num === currentPage ? 'pagination__btn--active' : '' %>">
+            <%= num %>
+          </a>
+        <% } %>
+      <% }) %>
+
+      <!-- Next -->
+      <% if (currentPage < totalPages) { %>
+        <a href="/products?page=<%= currentPage + 1 %>&search=<%= filters.search %>&category=<%= filters.category %>&minPrice=<%= filters.minPrice %>&maxPrice=<%= filters.maxPrice %>&sortBy=<%= filters.sortBy %>"
+           class="pagination__btn">Next &#8594;</a>
+      <% } else { %>
+        <span class="pagination__btn pagination__btn--disabled">Next &#8594;</span>
+      <% } %>
+
+    </nav>
+  <% } %>
+
+</section>
+
+<%- include('partials/footer') %>

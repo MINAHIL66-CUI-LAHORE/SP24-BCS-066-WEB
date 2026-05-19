@@ -1,0 +1,12 @@
+// Checks if the logged-in user has the 'admin' role
+module.exports = function isAdmin(req, res, next) {
+  if (req.session && req.session.userId && req.session.userRole === 'admin') {
+    return next();
+  }
+  // Regular logged-in user — redirect to access denied page
+  if (req.session && req.session.userId) {
+    return res.redirect('/access-denied');
+  }
+  // Not logged in — go to admin login
+  return res.redirect('/admin/login');
+};
